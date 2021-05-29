@@ -14,7 +14,7 @@ ___
 ```bash
 sudo apt update && sudo apt install ansible -y
 ```
-2. Insall Git
+2. Install Git
 ```bash
 sudo apt install git
 ```
