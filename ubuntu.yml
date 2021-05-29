@@ -35,41 +35,11 @@
           - simplescreenrecorder
 
     - block:
-      - name: Verify if Oh-My-zsh is installed
-        command: test -d /home/{{ ansible_user_id }}/.oh-my-zsh
-        register: ohmyzsh
-        ignore_errors: true
-      - name: Installing Oh-My-zsh
-        shell:
-          cmd: 'curl -fsL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash'
-          warn: false
-        when: ohmyzsh.rc != 0
-      - name: Changing Default Shell to ZSH
-        become: yes
-        user: 
-          name: '{{ ansible_user_id }}'
-          shell: /bin/zsh 
-      - name: Changing Default ZSH Theme to Agnoster
-        lineinfile:
-          path: /home/{{ ansible_user_id }}/.zshrc
-          regexp: '^ZSH_THEME='
-          line: 'ZSH_THEME="agnoster"'
-      - name: Creating ZSH Completion folder
-        file:
-          path: /home/{{ ansible_user_id }}/.oh-my-zsh/completions
-          state: directory
-          mode: 0755
-      - name: Adding autoload to compinit
-        lineinfile:
-          path: /home/{{ ansible_user_id }}/.zshrc
-          line: 'autoload -U compinit && compinit'
-          state: present
-
-    - name: Installing AWS CLI via pip3
-      become: true
-      pip:
-        name: awscli
-        executable: pip3
+      - name: Installing AWS CLI via pip3
+        become: true
+        pip:
+          name: awscli
+          executable: pip3
 
     - block:
       - name: Install Google Key
@@ -95,14 +65,13 @@
           src: 'https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_linux_amd64.zip'
           dest: /usr/local/bin
           remote_src: yes
-
-    - block:
-      - name: Installing Terraform 0.12.19
+    
+    - name: Installing Terraform 0.15.0
         become: true
         unarchive:
-          src: 'https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip'
+          src: 'https://releases.hashicorp.com/terraform/0.15.0/terraform_0.15.0_linux_amd64.zip'
           dest: /usr/local/bin
-          remote_src: yes
+          remote_src: yes      
 
     - block:
       - name: Installing Vault 1.5.0
@@ -156,87 +125,25 @@
           - bbenoist.vagrant
           - hashicorp.terraform
 
-    - block: 
-      - name: Install Docker Key
-        become: true
-        apt_key:
-          url: 'https://download.docker.com/linux/ubuntu/gpg'
-          state: present
-      - name: Install Docker Repository
-        become: true
-        apt_repository:
-          repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
-          state: present
-          filename: docker-ce
-      - name: Install Docker
-        become: true
-        apt:
-          name: '{{ item }}'
-        loop:
-          - docker-ce
-      - name: Adding existing user to group Docker
-        become: yes
-        user: 
-          name: '{{ ansible_user }}'
-          groups: docker 
-          append: yes
-      - name: Install Docker Machine Bash Completion
-        become: true
-        get_url:
-          url: 'https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64'
-          dest: '/usr/local/bin/docker-compose'
-          mode: 755
-          remote_src: yes
-      - name: Install Docker-Compose
-        become: true
-        get_url:
-          url: 'https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/bash/docker-machine.bash'
-          dest: '/etc/bash_completion.d/docker-machine'
-          remote_src: yes
-      - name: Install Docker-Compose Bash Completion
-        become: true
-        get_url:
-          url: 'https://raw.githubusercontent.com/docker/compose/1.26.2/contrib/completion/bash/docker-compose'
-          dest: '/etc/bash_completion.d/docker-compose'
-          remote_src: yes
-      - name: Install Docker-Compose and Docker Machine Zsh Completion
-        lineinfile:
-          path: /home/{{ ansible_user }}/.zshrc
-          regexp: '^plugins='
-          line: 'plugins=(git docker docker-compose)'
-        
     - block:
-      - name: Installing Kubectl 1.16.0
+      - name: Installing Kubectl 1.21.0
         become: true
         get_url:    
-          url: 'https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl'
+          url: 'https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl'
           dest: /usr/local/bin/kubectl
           mode: 755
           remote_src: yes          
-  
-# OPTIONAL:
-#  - PEEK - Lightweight Screen Recorder that can export as GIF
-#  - OBS-STUDIO - Screen Recorder and Casting Software 
-
-    - block:
-      - name: Adding Peek Repository
+      - name: Downloading Kubectx and Kubens 
         become: true
-        apt_repository:
-          repo: 'ppa:peek-developers/stable'
-      - name: Install Peek
+        git:
+          repo: 'https://github.com/ahmetb/kubectx'
+          dest: /opt/kubectx 
+      - name: Creating Symlink to kubectx and kubens 
         become: true
-        apt:
-          name: peek
-
-    - block:
-      - name: Install obsproject Ubuntu Repo
-        become: true
-        apt_repository:
-          repo: 'deb [arch=amd64] http://ppa.launchpad.net/obsproject/obs-studio/ubuntu {{ ansible_distribution_release }} main'
-          state: present
-          filename: obsproject
-      - name: Install obs Studio
-        become: true
-        apt:
-          name: obs-studio
-
+        file:
+          src: '/opt/kubectx/{{ item }}'
+          dest: '/usr/local/bin/{{ item }}'
+          state: link
+        with_items:
+          - kubectx
+          - kubens   
