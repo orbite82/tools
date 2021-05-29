@@ -16,7 +16,7 @@ sudo apt update && sudo apt install ansible -y
 ```
 2. Clone this repository
 ```bash
-git clone git@github.com:caiodelgadonew/tools.git
+git clone https://github.com/orbite82/tools.git
 ```
 
 3. Apply the configuration
