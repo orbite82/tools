@@ -21,8 +21,7 @@
           - ca-certificates
           - gnupg
           - python3-pip
-          - make
-          - terminator
+          - make          
           - git
           - bash-completion
           - gnupg-agent
@@ -31,6 +30,14 @@
           - fonts-hack
           - tilix
           - virtualbox
+          - terminator
+          - slack
+          - shutter
+          - discord
+          - telegram
+          - teams
+          - vlc
+          - simplescreenrecorder
 
     - block:
       - name: Verify if Oh-My-zsh is installed
