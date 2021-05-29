@@ -98,52 +98,52 @@
           mode: 755
           remote_src: yes
           
-    - block:
-      - name: Install Microsoft Key
+    - block: 
+      - name: Install Docker Key
         become: true
         apt_key:
-          url: 'https://packages.microsoft.com/keys/microsoft.asc'
+          url: 'https://download.docker.com/linux/ubuntu/gpg'
           state: present
-      - name: Install VSCode Repository
+      - name: Install Docker Repository
         become: true
         apt_repository:
-          repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'
+          repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
           state: present
-          filename: vscode
-      - name: Install Visual Studio Code
+          filename: docker-ce
+      - name: Install Docker
         become: true
         apt:
-          name: code
-      - name: Install Virtual Studio Code Extensions
-        shell:
-          cmd: code --install-extension '{{ item }}' 
-        loop: 
-          - ms-python.python
-          - puppet.puppet-vscode
-          - ms-azuretools.vscode-docker
-          - bbenoist.vagrant
-          - hashicorp.terraform
-    - block:      
-      - name: Add Docker GPG key
-          apt_key: url=https://download.docker.com/linux/ubuntu/gpg
-
-      - name: Install basic list of packages
-          apt:
-            name: ['apt-transport-https','ca-certificates','curl','gnupg2','software-properties-common']
-            state: present
-            update_cache: yes  
-
-      - name: Add Docker APT repository
-          apt_repository:
-            repo: deb [arch=amd64] https://download.docker.com/linux/{{ansible_distribution|lower}} {{ansible_distribution_release}} stable  
-
-      - name: Install Docker packages
-          apt:
-            name: ['docker-ce','docker-ce-cli','containerd.io']
-            state: present  
-
-      - name: Install Docker-compose 
-          shell: curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose    
+          name: docker-ce
+      - name: Adding existing user to group Docker
+        become: yes
+        user: 
+          name: '{{ ansible_user_id }}'
+          groups: docker 
+          append: yes
+      - name: Install Docker-Compose
+        become: true
+        get_url:
+          url: 'https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64'
+          dest: '/usr/local/bin/docker-compose'
+          mode: 755
+          remote_src: yes
+      - name: Install Docker Machine Bash Completion
+        become: true
+        get_url:
+          url: 'https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/bash/docker-machine.bash'
+          dest: '/etc/bash_completion.d/docker-machine'
+          remote_src: yes
+      - name: Install Docker-Compose Bash Completion
+        become: true
+        get_url:
+          url: 'https://raw.githubusercontent.com/docker/compose/1.26.2/contrib/completion/bash/docker-compose'
+          dest: '/etc/bash_completion.d/docker-compose'
+          remote_src: yes
+      - name: Install Docker-Compose and Docker Machine Zsh Completion
+        lineinfile:
+          path: /home/{{ ansible_user_id }}/.zshrc
+          regexp: '^plugins='
+          line: 'plugins=(git docker docker-compose)'   
 
     - block:
       - name: Installing Kubectl 1.21.0
