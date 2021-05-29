@@ -14,12 +14,16 @@ ___
 ```bash
 sudo apt update && sudo apt install ansible -y
 ```
-2. Clone this repository
+2. Insall Git
+```bash
+sudo apt install git
+```
+3. Clone this repository
 ```bash
 git clone https://github.com/orbite82/tools.git
 ```
 
-3. Apply the configuration
+4. Apply the configuration
 ```bash
 ansible-playbook tools/ubuntu.yml --ask-become-pass
 ```
