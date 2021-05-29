@@ -36,8 +36,9 @@
 
     - block:
       - name: Verify if Oh-My-zsh is installed
-        command: test -d /home/{{ ansible_user }}/.oh-my-zsh
+        command: test -d /home/{{ ansible_user_id }}/.oh-my-zsh
         register: ohmyzsh
+        ignore_errors: true
       - name: Installing Oh-My-zsh
         shell:
           cmd: 'curl -fsL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash'
@@ -46,13 +47,23 @@
       - name: Changing Default Shell to ZSH
         become: yes
         user: 
-          name: '{{ ansible_user }}'
+          name: '{{ ansible_user_id }}'
           shell: /bin/zsh 
       - name: Changing Default ZSH Theme to Agnoster
         lineinfile:
-          path: /home/{{ ansible_user }}/.zshrc
+          path: /home/{{ ansible_user_id }}/.zshrc
           regexp: '^ZSH_THEME='
           line: 'ZSH_THEME="agnoster"'
+      - name: Creating ZSH Completion folder
+        file:
+          path: /home/{{ ansible_user_id }}/.oh-my-zsh/completions
+          state: directory
+          mode: 0755
+      - name: Adding autoload to compinit
+        lineinfile:
+          path: /home/{{ ansible_user_id }}/.zshrc
+          line: 'autoload -U compinit && compinit'
+          state: present
 
     - name: Installing AWS CLI via pip3
       become: true
