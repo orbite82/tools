@@ -25,7 +25,6 @@
           - git
           - bash-completion
           - gnupg-agent
-          - zsh
           - flameshot
           - fonts-hack
           - tilix
