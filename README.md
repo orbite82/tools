@@ -16,7 +16,7 @@ sudo apt update && sudo apt install ansible -y
 ```
 2. Install Git
 ```bash
-sudo apt install git
+sudo apt install git -y
 ```
 3. Clone this repository
 ```bash
