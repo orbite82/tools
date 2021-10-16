@@ -168,8 +168,7 @@ ansible-playbook tools/ubuntu.yml --ask-become-pass
    10  sudo rm /var/cache/apt/archives/lock
    11  ansible-playbook tools/ubuntu.yml --ask-become-pass
    12  history
-```  ___
-
+```
 # License
 GPLv3
 
