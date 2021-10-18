@@ -32,6 +32,7 @@
           - terminator
           - vlc
           - simplescreenrecorder
+          - password-gorilla
 
     - block:
       - name: Installing AWS CLI via pip3
