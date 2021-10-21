@@ -35,6 +35,7 @@
           - password-gorilla
           - slack
           - telegram-desktop
+          - jq
 
     - block:
       - name: Installing AWS CLI via pip3
@@ -151,3 +152,20 @@
         with_items:
           - kubectx
           - kubens   
+
+    - block: 
+      - name: Install Brave Key
+        become: true
+        apt_key:
+          url: 'https://brave-browser-apt-release.s3.brave.com/brave-core.asc'
+          state: present
+      - name: Install Brave Repository
+        become: true
+        apt_repository:
+          repo: 'deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main'
+          state: present
+          filename: brave
+      - name: Install Brave Browser
+        become: true
+        apt:
+          name: brave-browser      
