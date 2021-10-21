@@ -34,6 +34,7 @@
           - simplescreenrecorder
           - password-gorilla
           - slack
+          - telegram-desktop
 
     - block:
       - name: Installing AWS CLI via pip3
