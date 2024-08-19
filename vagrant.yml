@@ -17,9 +17,9 @@
 
         - name: Add HashiCorp repository
           ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+            repo: 'deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main'
             state: present
-            folename: hashicorp
+            filename: hashicorp
 
         - name: Install Vagrant 2.2.10
           apt:
