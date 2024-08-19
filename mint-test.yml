@@ -1,0 +1,54 @@
+---
+- name: Preparing Workstation
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Installing Linux Apps
+      become: true
+      apt:
+        name: '{{ item }}'
+        install_recommends: yes
+        state: present
+      loop:
+          - vim
+          - htop
+          - curl
+          - wget
+          - ncdu
+          - tree
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+          - python3-pip
+          - make          
+          - git
+          - bash-completion
+          - gnupg-agent
+          - flameshot
+          - fonts-hack
+          - tilix
+          - virtualbox
+          - terminator
+          - vlc
+          - simplescreenrecorder
+          - password-gorilla
+          - slack
+          - telegram-desktop
+          - jq
+          - kazam
+
+    - block:
+      - name: Installing AWS CLI via pip3
+        become: true
+        pip:
+          name: awscli
+          executable: pip3
+
+    - block:
+      - name: Installing Vagrant 2.2.10
+        become: true
+        unarchive:
+          src: 'https://releases.hashicorp.com/vagrant/2.4.1/vagrant_2.4.1_linux_amd64.zip'
+          dest: /usr/local/bin
+          remote_src: yes
