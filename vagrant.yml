@@ -15,11 +15,11 @@
             url: 'https://apt.releases.hashicorp.com/gpg'
             state: present
 
-        - name: Add HashiCorp repository
-          ansible.builtin.apt_repository:
-            repo: 'deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main'
-            state: present
-            filename: hashicorp
+        #- name: Add HashiCorp repository
+          #ansible.builtin.apt_repository:
+            #repo: 'deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main'
+            #state: present
+            #filename: hashicorp
       
         - name: Installing Vagrant 2.4.1
           become: true
