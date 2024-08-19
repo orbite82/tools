@@ -21,6 +21,14 @@
             state: present
             filename: hashicorp
 
+      - block:
+      - name: Installing Vagrant 2.2.10
+        become: true
+        unarchive:
+          src: 'https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_linux_amd64.zip'
+          dest: /usr/local/bin
+          remote_src: yes    
+
         - name: Install Vagrant 2.2.10
           apt:
             name: vagrant=2.2.10
