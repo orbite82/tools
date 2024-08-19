@@ -1,5 +1,5 @@
 - name: Install Vagrant 2.2.10
-  hosts: all
+  hosts: localhost
   become: yes
   tasks:
     - block:
