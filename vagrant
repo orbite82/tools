@@ -1,0 +1,31 @@
+- name: Install Vagrant 2.2.10
+  hosts: all
+  become: yes
+  tasks:
+    - block:
+        - name: Ensure dependencies are installed
+          package:
+            name:
+              - curl
+              - gnupg
+            state: present
+
+        - name: Add HashiCorp GPG key
+          apt_key:
+            url: 'https://apt.releases.hashicorp.com/gpg'
+            state: present
+
+        - name: Add HashiCorp repository
+          apt_repository:
+            repo: 'deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main'
+            state: present
+
+        - name: Install Vagrant 2.2.10
+          apt:
+            name: vagrant=2.2.10
+            state: present
+
+      rescue:
+        - name: Print error message
+          debug:
+            msg: "An error occurred while installing Vagrant 2.2.10"
